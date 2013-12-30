@@ -1,5 +1,23 @@
+<<<<<<< HEAD
 node_modules
 dist
 .tmp
 .sass-cache
 app/bower_components
+=======
+lib-cov
+*.seed
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+*.gz
+
+pids
+logs
+results
+
+npm-debug.log
+node_modules
+>>>>>>> a80e6f6a2fd7181b873bc21c54ab88cdf7862cf0
