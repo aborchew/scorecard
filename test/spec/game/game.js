@@ -14,7 +14,7 @@ describe('Baseball Game Creation', function () {
 
     var game = new Game();
 
-    expect(game.currentBatter()).toBe('away 1');
+    expect(game.currentBatter().name).toBe('away 1');
 
   });
 
@@ -89,7 +89,7 @@ describe('Basic Game Plays', function () {
 
     expect(game.count.balls).toBe(0);
     expect(game.count.strikes).toBe(0);
-    expect(game.status.bases[0]).toBe('away 2');
+    expect(game.status.bases[0].name).toBe('away 2');
     expect(game.status.bases[1]).toBeUndefined();
     expect(game.status.bases[2]).toBeUndefined();
 
@@ -104,8 +104,8 @@ describe('Basic Game Plays', function () {
 
     expect(game.count.balls).toBe(0);
     expect(game.count.strikes).toBe(0);
-    expect(game.status.bases[0]).toBe('away 3');
-    expect(game.status.bases[1]).toBe('away 2');
+    expect(game.status.bases[0].name).toBe('away 3');
+    expect(game.status.bases[1].name).toBe('away 2');
     expect(game.status.bases[2]).toBeUndefined();
 
   });
@@ -119,9 +119,9 @@ describe('Basic Game Plays', function () {
 
     expect(game.count.balls).toBe(0);
     expect(game.count.strikes).toBe(0);
-    expect(game.status.bases[0]).toBe('away 4');
-    expect(game.status.bases[1]).toBe('away 3');
-    expect(game.status.bases[2]).toBe('away 2');
+    expect(game.status.bases[0].name).toBe('away 4');
+    expect(game.status.bases[1].name).toBe('away 3');
+    expect(game.status.bases[2].name).toBe('away 2');
 
   });
 
@@ -184,7 +184,7 @@ describe('Basic Game Plays', function () {
     expect(game.status.bases[2]).toBeUndefined();
     expect(game.count.outs).toBe(0);
     expect(game.status.side).toBe('home');
-    expect(game.currentBatter()).toBe('home 1')
+    expect(game.currentBatter().name).toBe('home 1')
 
   });
 
@@ -205,18 +205,18 @@ describe('Basic Game Plays', function () {
       bases: 1
     });
 
-    expect(game.status.bases[0]).toBe('home 3');
-    expect(game.status.bases[1]).toBe('home 2');
-    expect(game.status.bases[2]).toBe('home 1');
+    expect(game.status.bases[0].name).toBe('home 3');
+    expect(game.status.bases[1].name).toBe('home 2');
+    expect(game.status.bases[2].name).toBe('home 1');
 
     game.pitch({
       hit: true,
       bases: 1
     });
 
-    expect(game.status.bases[0]).toBe('home 4');
-    expect(game.status.bases[1]).toBe('home 3');
-    expect(game.status.bases[2]).toBe('home 2');
+    expect(game.status.bases[0].name).toBe('home 4');
+    expect(game.status.bases[1].name).toBe('home 3');
+    expect(game.status.bases[2].name).toBe('home 2');
     expect(game.scoreboard.home[1]).toBe(1);
 
   });
@@ -280,7 +280,7 @@ describe('Multi-base hits', function () {
     });
 
     expect(game.status.bases[0]).toBeUndefined();
-    expect(game.status.bases[1]).toBe('away 1');
+    expect(game.status.bases[1].name).toBe('away 1');
     expect(game.status.bases[2]).toBeUndefined();
 
   });
@@ -315,7 +315,7 @@ describe('Multi-base hits', function () {
 
   });
 
-  it('records a home run with a runner on second.', function () {
+  it('records a home run with a runner on third.', function () {
 
     game.pitch({
       hit: true,
@@ -326,6 +326,37 @@ describe('Multi-base hits', function () {
     expect(game.status.bases[1]).toBeUndefined();
     expect(game.status.bases[2]).toBeUndefined();
     expect(game.scoreboard.away[0]).toBe(5);
+
+  });
+
+})
+
+describe('Baserunning Activities', function () {
+
+  var game = new Game();
+
+  it('records a steal, moving a runner from first to second.', function () {
+
+    game.pitch({
+      hit:true
+    })
+
+    game.runners.advance(0,1);
+
+    expect(game.status.bases[0]).toBeUndefined();
+    expect(game.status.bases[1]).not.toBeUndefined();
+    expect(game.status.bases[2]).toBeUndefined();
+
+  });
+
+  it('records a caught stealing.', function () {
+
+    game.runners.out(1,'cs');
+
+    expect(game.status.bases[0]).toBeUndefined();
+    expect(game.status.bases[1]).toBeUndefined();
+    expect(game.status.bases[2]).toBeUndefined();
+    expect(game.count.outs).toBe(1);
 
   });
 

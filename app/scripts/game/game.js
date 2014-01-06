@@ -90,7 +90,6 @@ var Game = function(config) {
 
   var advance = function(rInd,bases) {
 
-    var rInd = rInd || -1;
     var bases = bases || 1;
     var _b = game.status.bases;
     var runner = _b[rInd] || currentBatter();
@@ -102,7 +101,7 @@ var Game = function(config) {
       } else {
         if(_b[b]) {
           _b[b+1] = _b[b];
-          _b[b] = undefined;
+          delete _b[b];
         } else {
           _b[b+1] = currentBatter();
           nextBatter();
@@ -193,7 +192,7 @@ var Game = function(config) {
   game.scoreboard[game.status.side][game.status.inning] = 0;
 
   var currentBatter = function() {
-    return teams[game.status.side].players[game.status.batter[game.status.side]].name;
+    return teams[game.status.side].players[game.status.batter[game.status.side]];
   }
 
   return {
@@ -213,9 +212,13 @@ var Game = function(config) {
       return currentBatter()
     },
     runners: {
-      advance: function (runner,bases) {
-        advance(runner,bases)
-;      }
+      advance: function (runner, bases) {
+        advance(runner,bases);
+      },
+      out: function (runner, method) {
+        delete game.status.bases[runner];
+        recordOut();
+      }
     }
   }
 
