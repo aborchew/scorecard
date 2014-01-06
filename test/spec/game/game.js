@@ -274,14 +274,10 @@ describe('Multi-base hits', function () {
 
   it('records a double with the bases empty', function () {
 
-    console.log(game.status.bases)
-
     game.pitch({
       hit: true,
       bases: 2
     });
-
-    console.log(game.status.bases)
 
     expect(game.status.bases[0]).toBeUndefined();
     expect(game.status.bases[1]).toBe('away 1');
@@ -289,53 +285,48 @@ describe('Multi-base hits', function () {
 
   });
 
-  // it('records three consecutive doubles with each runner on second scoring on each double.', function () {
+  it('records three consecutive doubles with each runner on second scoring on each double.', function () {
 
-  //   game.pitch({
-  //     hit: true,
-  //     bases: 2
-  //   });
+    game.pitch({
+      hit: true,
+      bases: 2
+    });
 
-  //   game.runners.advance(2,1);
+    game.runners.advance(2,1);
 
-  //   game.pitch({
-  //     hit: true,
-  //     bases: 2
-  //   });
+    game.pitch({
+      hit: true,
+      bases: 2
+    });
 
-  //   game.runners.advance(2,1);
+    game.runners.advance(2,1);
 
-  //   game.pitch({
-  //     hit: true,
-  //     bases: 2
-  //   });
+    game.pitch({
+      hit: true,
+      bases: 2
+    });
 
-  //   game.runners.advance(2,1);
+    game.runners.advance(2,1);
 
-  //   expect(game.status.bases[0]).toBeUndefined();
-  //   expect(game.status.bases[1]).not.toBeUndefined();
-  //   expect(game.status.bases[2]).toBeUndefined();
-  //   expect(game.scoreboard.away[0]).toBe(3);
+    expect(game.status.bases[0]).toBeUndefined();
+    expect(game.status.bases[1]).not.toBeUndefined();
+    expect(game.status.bases[2]).toBeUndefined();
+    expect(game.scoreboard.away[0]).toBe(3);
 
-  // });
+  });
 
-  // it('records a home run with a runner on second.', function () {
+  it('records a home run with a runner on second.', function () {
 
-  //   console.log(game.status.bases);
-  //   console.log(game.currentBatter());
+    game.pitch({
+      hit: true,
+      bases: 4
+    });
 
-  //   game.pitch({
-  //     hit: true,
-  //     bases: 4
-  //   });
+    expect(game.status.bases[0]).toBeUndefined();
+    expect(game.status.bases[1]).toBeUndefined();
+    expect(game.status.bases[2]).toBeUndefined();
+    expect(game.scoreboard.away[0]).toBe(5);
 
-  //   console.log(game.status.bases);
-
-  //   expect(game.status.bases[0]).toBeUndefined();
-  //   expect(game.status.bases[1]).toBeUndefined();
-  //   expect(game.status.bases[2]).toBeUndefined();
-  //   expect(game.scoreboard.away[0]).toBe(5);
-
-  // });
+  });
 
 })

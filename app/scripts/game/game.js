@@ -55,9 +55,7 @@ var Game = function(config) {
     } else if(pitch.hit) {
       var i = 0;
       var bases = pitch.bases || 1;
-      for(i;i<bases;i++) {
-        advance(i-1);
-      }
+      advance(-1,bases);
     } else if(pitch.out) {
       recordOut();
     }
@@ -90,18 +88,17 @@ var Game = function(config) {
     };
   }
 
-  var advance = function(rInd) {
+  var advance = function(rInd,bases) {
 
     var rInd = rInd || -1;
+    var bases = bases || 1;
     var _b = game.status.bases;
     var runner = _b[rInd] || currentBatter();
 
     var tryPush = function(b) {
       if(_b[b+1]) {
         tryPush(b+1);
-        if(_b[b+2] != runner) {
-          tryPush(b);
-        };
+        tryPush(b);
       } else {
         if(_b[b]) {
           _b[b+1] = _b[b];
@@ -116,12 +113,14 @@ var Game = function(config) {
       }
     };
 
-    tryPush(rInd);
+    for(var i = 0; i < bases; i++) {
+      tryPush(rInd+i);
+    }
 
   }
 
   var score = function() {
-    console.log(game.status.bases.splice(3,1));
+    game.status.bases.splice(3,1)
     game.scoreboard[game.status.side][game.status.inning]++;
     game.scoreboard[game.status.side][0]++;
   }
@@ -212,6 +211,11 @@ var Game = function(config) {
     },
     currentBatter: function () {
       return currentBatter()
+    },
+    runners: {
+      advance: function (runner,bases) {
+        advance(runner,bases)
+;      }
     }
   }
 
