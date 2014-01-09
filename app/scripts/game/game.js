@@ -7,8 +7,12 @@ var Player = function(config) {
 
 var Game = function(config) {
 
+  var config = config || {};
+
   var game
   , teams
+  , history
+  , existingHistory = config.gameHistory || undefined;
   ;
 
   var simpleReduce = function(arr) {
@@ -73,6 +77,7 @@ var Game = function(config) {
     game.count.outs++;
     game.count.balls = 0,
     game.count.strikes = 0;
+    nextBatter();
     if(game.count.outs == 3) {
       game.status.bases = [undefined,undefined,undefined];
       game.count.outs = 0;
@@ -83,8 +88,6 @@ var Game = function(config) {
         game.status.inning++;
       }
       game.scoreboard[game.status.side][game.status.inning] = 0;
-    } else {
-      nextBatter();
     };
   }
 
@@ -209,7 +212,7 @@ var Game = function(config) {
       recordPitch(pitch);
     },
     currentBatter: function () {
-      return currentBatter()
+      return currentBatter();
     },
     runners: {
       advance: function (runner, bases) {

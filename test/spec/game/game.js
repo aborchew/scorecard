@@ -2,9 +2,9 @@
 
 describe('Baseball Game Creation', function () {
 
-  it('creates a game', function () {
+  var game = new Game();
 
-    var game = new Game();
+  it('creates a game', function () {
 
     expect(typeof game).toBe('object');
 
@@ -12,15 +12,11 @@ describe('Baseball Game Creation', function () {
 
   it('brings a batter up to the plate', function () {
 
-    var game = new Game();
-
     expect(game.currentBatter().name).toBe('away 1');
 
   });
 
   it('zeroes out the score for the top of the first.', function () {
-
-    var game = new Game();
 
     expect(game.scoreboard.away[1]).toBe(0);
 
@@ -264,6 +260,23 @@ describe('Basic Game Plays', function () {
     expect(game.scoreboard.away[2]).toBe(1);
     expect(game.scoreboard.home[1]).toBe(1);
     expect(game.scoreboard.away[0]).toBe(3);
+  });
+
+  it('records a batted out', function () {
+
+    console.log(game.count.outs);
+
+    game.pitch({
+      out: true
+    });
+
+    expect(game.count.balls).toBe(0);
+    expect(game.count.strikes).toBe(0);
+    expect(game.count.outs).toBe(1);
+    expect(game.status.bases[0]).not.toBeUndefined();
+    expect(game.status.bases[1]).not.toBeUndefined();
+    expect(game.status.bases[2]).not.toBeUndefined();
+
   });
 
 });

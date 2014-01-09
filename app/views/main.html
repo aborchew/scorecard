@@ -1,15 +1,60 @@
-<h1>Baseball!</h1>
+<div class="scoreboard">
+  <ul>
+    <li>&nbsp;</li>
+    <li ng-repeat="i in [1,2,3,4,5,6,7,8,9]">
+      {{i}}
+    </li>
+  </ul>
+  <ul>
+    <li>Away</li>
+    <li ng-repeat="i in [1,2,3,4,5,6,7,8,9,0]" ng-switch on="game.scoreboard.away[i]">
+      <span ng-switch-default>{{game.scoreboard.away[i]}}</span>
+      <span ng-switch-when="undefined">&nbsp;</span>
+    </li>
+  </ul>
+  <ul>
+    <li>Home</li>
+    <li ng-repeat="i in [1,2,3,4,5,6,7,8,9,0]" ng-switch on="game.scoreboard.home[i]">
+      <span ng-switch-default>{{game.scoreboard.home[i]}}</span>
+      <span ng-switch-when="undefined">&nbsp;</span>
+    </li>
+  </ul>
+</div>
 
-<h4>{{game.status.side}} | {{game.status.inning}}</h4>
+<br clear="both"/>
+
+<!-- <h4>{{game.status.side}} | {{game.status.inning}}</h4> -->
 <h3>{{game.count.balls}} - {{game.count.strikes}} | {{game.count.outs}} Out</h3>
 
-<br/>
+<br clear="both"/>
 
+<div class="bases">
+  <div class="third" ng-class="{'occupied':game.status.bases[2]}">&nbsp;</div>
+  <div class="second" ng-class="{'occupied':game.status.bases[1]}">&nbsp;</div>
+  <div class="home">&nbsp;</div>
+  <div class="first" ng-class="{'occupied':game.status.bases[0]}">&nbsp;</div>
+</div>
+
+<p>Batting: <strong>{{game.currentBatter().name}}</strong></p>
 <p>On First: {{game.status.bases[0].name || 'Empty'}}</p>
 <p>On Second: {{game.status.bases[1].name || 'Empty'}}</p>
 <p>On Third: {{game.status.bases[2].name || 'Empty'}}</p>
 
-<br/>
+<br clear="both"/>
+<br clear="both"/>
 
 <button ng-click="game.pitch()">Ball</button>
 <button ng-click="game.pitch({strike:true})">Strike</button>
+
+<br clear="both"/>
+<br clear="both"/>
+
+<button ng-click="game.pitch({hit:true})">Single</button>
+<button ng-click="game.pitch({hit:true,bases:2})">Double</button>
+<button ng-click="game.pitch({hit:true,bases:3})">Triple</button>
+<button ng-click="game.pitch({hit:true,bases:4})">Home Run</button>
+
+<br clear="both"/>
+<br clear="both"/>
+
+<button ng-click="game.pitch({out:true})">Out</button>
