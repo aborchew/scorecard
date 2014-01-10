@@ -22,39 +22,35 @@
 </div>
 
 <br clear="both"/>
-
-<!-- <h4>{{game.status.side}} | {{game.status.inning}}</h4> -->
-<h3>{{game.count.balls}} - {{game.count.strikes}} | {{game.count.outs}} Out</h3>
-
 <br clear="both"/>
 
 <div class="bases">
-  <div class="third" ng-class="{'occupied':game.status.bases[2]}">&nbsp;</div>
-  <div class="second" ng-class="{'occupied':game.status.bases[1]}">&nbsp;</div>
-  <div class="home">&nbsp;</div>
-  <div class="first" ng-class="{'occupied':game.status.bases[0]}">&nbsp;</div>
+  <div class="third" ng-class="{'occupied':game.status.bases[2]}" ng-click="runnerClick(2)">
+    <span>{{game.status.bases[2].name || '&nbsp;'}}</span>
+  </div>
+  <div class="second" ng-class="{'occupied':game.status.bases[1]}" ng-click="runnerClick(1)">
+    <span>{{game.status.bases[1].name || '&nbsp;'}}</span>
+  </div>
+  <div class="home"></div>
+  <div class="first" ng-class="{'occupied':game.status.bases[0]}" ng-click="runnerClick(0)">
+    <span>{{game.status.bases[0].name || '&nbsp;'}}</span>
+  </div>
 </div>
 
-<p>Batting: <strong>{{game.currentBatter().name}}</strong></p>
-<p>On First: {{game.status.bases[0].name || 'Empty'}}</p>
-<p>On Second: {{game.status.bases[1].name || 'Empty'}}</p>
-<p>On Third: {{game.status.bases[2].name || 'Empty'}}</p>
+<p><strong>{{game.currentBatter().name}}</strong> | {{game.count.balls}} - {{game.count.strikes}} | {{game.count.outs}} Out</p>
 
-<br clear="both"/>
-<br clear="both"/>
+<hr/>
 
 <button ng-click="game.pitch()">Ball</button>
 <button ng-click="game.pitch({strike:true})">Strike</button>
 
-<br clear="both"/>
-<br clear="both"/>
+<hr/>
 
 <button ng-click="game.pitch({hit:true})">Single</button>
 <button ng-click="game.pitch({hit:true,bases:2})">Double</button>
 <button ng-click="game.pitch({hit:true,bases:3})">Triple</button>
 <button ng-click="game.pitch({hit:true,bases:4})">Home Run</button>
 
-<br clear="both"/>
-<br clear="both"/>
+<hr/>
 
 <button ng-click="game.pitch({out:true})">Out</button>
