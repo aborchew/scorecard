@@ -11,8 +11,7 @@ var Game = function(config) {
 
   var game
   , teams
-  , history
-  , existingHistory = config.gameHistory || undefined;
+  , historyObj = config.hist || {};
   ;
 
   var simpleReduce = function(arr) {
@@ -41,6 +40,14 @@ var Game = function(config) {
       home: [0]
     }
   };
+
+  if(!historyObj.gameCreation) {
+    historyObj.gameCreation = Date.now();
+  }
+
+  if(!historyObj.plays || typeof historyObj.plays !== 'object') {
+    historyObj.plays = [];
+  }
 
   var recordPitch = function(pitch) {
     var pitch = pitch || {};
@@ -222,7 +229,10 @@ var Game = function(config) {
         delete game.status.bases[runner];
         recordOut();
       }
-    }
+    },
+    hist: function () {
+      return historyObj;
+    }()
   }
 
 }
