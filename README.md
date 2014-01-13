@@ -3,7 +3,7 @@ scorecard
 
 Softball/Baseball Score Card app
 
-@Todo
+#@Todo
 Create game history object
 
 @Todo
