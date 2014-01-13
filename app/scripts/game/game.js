@@ -124,9 +124,11 @@ var Game = function(config) {
       }
     };
 
-    for(var i = 0; i < bases; i++) {
-      tryPush(rInd+i);
-    }
+    if(_b[rInd] || rInd == -1) {
+      for(var i = 0; i < bases; i++) {
+        tryPush(rInd+i);
+      }
+    };
 
   }
 
