@@ -124,6 +124,12 @@ describe('Basic Game Plays', function () {
   it('records a single', function () {
 
     game.pitch({
+      strike: true
+    });
+
+    game.pitch();
+
+    game.pitch({
       hit: true,
       bases: 1
     });

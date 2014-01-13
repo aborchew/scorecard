@@ -64,6 +64,8 @@ var Game = function(config) {
         advance(-1);
       }
     } else if(pitch.hit) {
+      game.count.balls = 0;
+      game.count.strikes = 0;
       var i = 0;
       var bases = pitch.bases || 1;
       advance(-1,bases);
