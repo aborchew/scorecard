@@ -1,3 +1,5 @@
+
+// Define a player
 var Player = function(config) {
   var config = config || {};
   return {
@@ -5,21 +7,23 @@ var Player = function(config) {
   }
 }
 
+// Define a player
 var Game = function(config) {
 
   var config = config || {};
 
   var game
   , teams
-  , historyObj = config.hist || {};
   ;
 
+  // Simple reduce method for ease of reuse
   var simpleReduce = function(arr) {
     return arr.reduce(function(prev,curr){
       return prev + curr;
     },0);
   }
 
+  // This is the meat and bones of the game information as it progresses.
   game = {
     count: {
       balls: 0,
@@ -36,44 +40,65 @@ var Game = function(config) {
       bases: [undefined,undefined,undefined],
     },
     scoreboard: {
-      away: [0],
+      away: [0,0],
       home: [0]
     }
   };
 
-  if(!historyObj.gameCreation) {
-    historyObj.gameCreation = Date.now();
+  // Retrieve the Player that is currently batting
+  var currentBatter = function() {
+    return teams[game.status.side].players[game.status.batter[game.status.side]];
   }
 
-  if(!historyObj.plays || typeof historyObj.plays !== 'object') {
-    historyObj.plays = [];
+  // Called upon a hit, strikeout, walk or side change.
+  var newCount = function() {
+    game.count.balls = 0;
+    game.count.strikes = 0;
   }
 
+  // Called for every pitch - balls, strikes, hits, etc.
   var recordPitch = function(pitch) {
+
+    // an empty or nonexistent argument will result in a ball.
     var pitch = pitch || {};
+
+    // Record a strike
     if(pitch.strike && !pitch.hit && !pitch.out) {
+
       game.count.strikes++;
+
+      // Record a strikeout (?)
       if(game.count.strikes == 3) {
+        newCount();
         recordOut();
       }
-    } else if(!pitch.hit && !pitch.out) {
+    }
+
+    // Record a ball
+    else if(!pitch.hit && !pitch.out) {
+
       game.count.balls++;
+
+      // Record a walk (?)
       if(game.count.balls == 4) {
-        game.count.balls = 0;
-        game.count.strikes = 0;
-        advance(-1);
+        newCount();
+        advance(-1,1);
       }
-    } else if(pitch.hit) {
-      game.count.balls = 0;
-      game.count.strikes = 0;
+    }
+
+    // Record a hit
+    else if(pitch.hit) {
+      newCount();
       var i = 0;
       var bases = pitch.bases || 1;
       advance(-1,bases);
     } else if(pitch.out) {
+      newCount();
       recordOut();
     }
   }
 
+  // Batter up!
   var nextBatter = function() {
     if(game.status.batter[game.status.side] < teams[game.status.side].players.length - 1) {
       game.status.batter[game.status.side]++;
@@ -82,62 +107,119 @@ var Game = function(config) {
     }
   }
 
+  // Called for all outs; in play, out of play and strikeouts.
   var recordOut = function() {
+
     game.count.outs++;
-    game.count.balls = 0,
-    game.count.strikes = 0;
     nextBatter();
+
+    // Turn the side (?)
     if(game.count.outs == 3) {
+
+      // Clear the bases
       game.status.bases = [undefined,undefined,undefined];
+
+      newCount();
       game.count.outs = 0;
+
+      // Turn the side, increment inning (?)
       if(game.status.side == 'away') {
         game.status.side = 'home';
       } else {
         game.status.side = 'away';
         game.status.inning++;
       }
+
+      // Put a zero up for the new side
       game.scoreboard[game.status.side][game.status.inning] = 0;
+
     };
   }
 
-  var advance = function(rInd,bases) {
+  // Called for any baserunner advancement; hit, walk, steal, error, etc.
+  var advance = function(runnerIndex,bases) {
 
+    // Number of bases to advance the runner
     var bases = bases || 1;
-    var _b = game.status.bases;
-    var runner = _b[rInd] || currentBatter();
 
-    var tryPush = function(b) {
+    // Reference to the bases object
+    var _b = game.status.bases;
+
+    // The runner to advance...
+    if(runnerIndex != -1 && _b[runnerIndex]) {
+      var runner = _b[runnerIndex];
+    }
+
+    // Or the batter
+    else if(runnerIndex == -1) {
+      var runner = currentBatter();
+    }
+
+    // ... Or do nothing (Maybe this should advance all runners 1 base)
+    else {
+      return;
+    }
+
+    // May be called multiple times for a single invocation of advance()
+    var advanceRunner = function(b) {
+
+      // Check if there is a runner at the base in front of the runner we want to move
       if(_b[b+1]) {
-        tryPush(b+1);
-        tryPush(b);
-      } else {
+        // Advance the blocking runner, then try again.
+        advanceRunner(b+1);
+        advanceRunner(b);
+      }
+
+      // Otherwise, advance the runner
+      else {
+
+        // See if the runner is already on base
         if(_b[b]) {
+
+          // Move the runner forward
           _b[b+1] = _b[b];
+
+          // Remove the reference to the runner at its' previous base
           delete _b[b];
-        } else {
+        }
+
+        // If the runner isn't on base, move the batter to first base.
+        else {
           _b[b+1] = currentBatter();
           nextBatter();
         }
+
       }
+
+      // If there's a runner on fourth base, he should score
       if(_b.length > 3) {
         score();
       }
+
     };
 
-    if(_b[rInd] || rInd == -1) {
-      for(var i = 0; i < bases; i++) {
-        tryPush(rInd+i);
-      }
-    };
+    // Start things off!
+    for(var i = 0; i < bases; i++) {
+      advanceRunner(runnerIndex+i);
+    }
 
   }
 
+  // Called whenever the bases object length exceeds 3 (a runner reaches home)
   var score = function() {
+
+    // Remove the scoring runner
     game.status.bases.splice(3,1)
+
+    // Increment the inning score
     game.scoreboard[game.status.side][game.status.inning]++;
+
+    // Increment the game score
     game.scoreboard[game.status.side][0]++;
+
   }
 
+  // Mock object to be used for development purposes prior to firebaseIO integration
   teams = {
     home: {
       players: [
@@ -203,12 +285,6 @@ var Game = function(config) {
     }
   }
 
-  game.scoreboard[game.status.side][game.status.inning] = 0;
-
-  var currentBatter = function() {
-    return teams[game.status.side].players[game.status.batter[game.status.side]];
-  }
-
   return {
     status: function () {
       return game.status;
@@ -233,10 +309,7 @@ var Game = function(config) {
         delete game.status.bases[runner];
         recordOut();
       }
-    },
-    hist: function () {
-      return historyObj;
-    }()
+    }
   }
 
 }

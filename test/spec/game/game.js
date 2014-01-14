@@ -378,17 +378,3 @@ describe('Baserunning Activities', function () {
   });
 
 })
-
-describe('History, game storage and retrieval', function () {
-
-  var game = new Game();
-
-  it('creates a game history object with a timestamp and history array', function () {
-
-    expect(game.hist).not.toBeUndefined();
-    expect(game.hist.gameCreation).not.toBeUndefined();
-    expect(game.hist.plays).not.toBeUndefined();
-
-  })
-
-})
