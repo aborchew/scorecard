@@ -3,6 +3,8 @@ scorecard
 
 **Softball/Baseball Score Card app**
 
+Demo: http://doublekid.com/sandbox/scorecard/#/
+
 ### Completed:
 
 **Unit tests and application logic for:**
